@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.AspNetCore.Cors;
 namespace WebAPIApplication
 {
     public class Startup
@@ -29,7 +29,7 @@ namespace WebAPIApplication
         {
             // Add framework services.
             services.AddMvc();
-
+            services.AddCors();
             string domain = $"https://{Configuration["Auth0:Domain"]}/";
             services.AddAuthorization(options =>
             {
@@ -38,6 +38,7 @@ namespace WebAPIApplication
                 options.AddPolicy("create:messages",
                     policy => policy.Requirements.Add(new HasScopeRequirement("create:messages", domain)));
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +61,11 @@ namespace WebAPIApplication
             // };
             // app.UseJwtBearerAuthentication(options);
 
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
             app.UseMvc();
         }
     }
