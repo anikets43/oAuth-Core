@@ -47,6 +47,12 @@ namespace WebAPIApplication
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+
             var options = new JwtBearerOptions
             {
                 Audience = Configuration["Auth0:ApiIdentifier"],
@@ -61,11 +67,6 @@ namespace WebAPIApplication
             // };
             // app.UseJwtBearerAuthentication(options);
 
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
             app.UseMvc();
         }
     }
